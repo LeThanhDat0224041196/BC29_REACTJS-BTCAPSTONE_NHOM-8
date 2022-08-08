@@ -7,9 +7,9 @@ import reportWebVitals from './reportWebVitals';
 
 
 // bootsrap & antd
-import "antd/dist/antd.css"
-import "bootstrap/dist/css/bootstrap.min.css"
-import "bootstrap/dist/js/bootstrap.bundle.js"
+import "antd/dist/antd.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.js";
 // Store
 import { Provider } from 'react-redux';
 import {store} from "./store/store"
