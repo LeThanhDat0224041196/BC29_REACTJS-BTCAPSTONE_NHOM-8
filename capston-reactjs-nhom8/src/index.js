@@ -7,7 +7,7 @@ import reportWebVitals from './reportWebVitals';
 
 
 // bootsrap & antd
-import "antd/dist/antd.css";
+import "antd/dist/antd.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.js";
 // Store
