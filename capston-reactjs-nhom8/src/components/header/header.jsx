@@ -1,7 +1,20 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { USER_INFO_KEY } from '../../constants/common';
+import { setUserInfoAction } from '../../store/action/action';
 
 export default function Header() {
+  const dispatch = useDispatch();
+  const userState = useSelector((state)=> state.userReducer);
+  const navigate = useNavigate();
+
+  const handleLogout = ()=>{
+    localStorage.removeItem(USER_INFO_KEY);
+    dispatch(setUserInfoAction(null));
+    navigate('/');
+  };
+
   return (
   <nav className="navbar navbar-expand-md bg-dark navbar-dark ">
   {/* Brand */}
@@ -23,12 +36,20 @@ export default function Header() {
         <NavLink className="nav-link" to='#'>Link</NavLink>
       </li>
     </ul>
+    <div className='ml-auto' id="collapsibleNavbar" >
+    {!userState.userInfo?(
+    <>
+      <button className='btn btn-outline-info my-2 my-sm-0 mr-2' type='sumit'>Register</button>
+      <button  className='btn btn-outline-success my-2 my-sm-0' onClick={()=> navigate('/login')}>Login</button>
+    </>
+  ):(
+    <>
+    <span>Hello {userState.userInfo.hoTen}</span>
+    <button className='btn btn-outline-info my-2 my-sm-0 mr-2' onClick={handleLogout}>Logout</button>
+    </>
+  )}
   </div>
-  <div className='ml-auto' id="collapsibleNavbar" >
-  <button className='btn btn-outline-info my-2 my-sm-0 mr-2' type='sumit'>Register</button>
-  <button  className='btn btn-outline-success my-2 my-sm-0' >Login</button>
   </div>
-  {/* // onClick={() => navigate("/login")} */}
 </nav>
   )
 }

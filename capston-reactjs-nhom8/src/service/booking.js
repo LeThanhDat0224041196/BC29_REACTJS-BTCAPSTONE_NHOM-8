@@ -1,6 +1,6 @@
 import { request } from "../configs/axios"
 
-const fetchRoomListAPI = (showtime)=>{
+const fetchRoomListAPI = (showTimeId)=>{
     return request({
         url:`/QuanLyDatVe/LayDanhSachPhongVe?MaLichChieu=${showTimeId}`,
         method: 'GET',
