@@ -32,7 +32,7 @@ export default function ContentShowTime() {
                 <div className='col-1'>
                   <img className='img-fluid rounded' src={ele.hinhAnh} />
                 </div>
-                <div className='col-11 pl-8'>
+                <div className='col-11 pl-0'>
                   <h5>{ele.tenCumRap}</h5>
                   <span className='text-muted'>{ele.diaChi}</span>
                 </div>
@@ -40,7 +40,7 @@ export default function ContentShowTime() {
                   <div className='row'>
                     {ele.lichChieuPhim.map((ele)=>{
                       return(
-                        <div key={ele.maLichChieu} className='col-4'>
+                        <div key={ele.maLichChieu} className='col-3'>
                           <Link to={`/booking/${ele.maLichChieu}`}>
                           {formatDate(ele.ngayChieuGioChieu)}
                           </Link>

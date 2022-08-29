@@ -1,7 +1,6 @@
 import React from 'react'
+import MovieForm from '../../modules/movie-form/Movie-Form'
 
 export default function UpdateMovie() {
-  return (
-    <div>Update-Movie</div>
-  )
+  return <MovieForm/>
 }

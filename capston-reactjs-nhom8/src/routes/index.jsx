@@ -66,7 +66,7 @@ function Router() {
                             element: <MovieManagement />,
                         },
                         {
-                            path: 'admin/movie-management/create',
+                            path: '/admin/movie-management/create',
                             element: <CreateMovie />,
                         },
                         {

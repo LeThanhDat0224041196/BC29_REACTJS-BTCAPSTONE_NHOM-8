@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import {useNavigate} from 'react-router-dom';
 import { fetchMovieListAPI } from '../../service/movie';
-
+import {LoadingContext} from '../../contexts/loading.context'
+import { useAsync } from '../../hooks/useAsync';
 
 export default function MovieList() {
 const navigate = useNavigate();
@@ -17,6 +18,11 @@ const fetchMovieList = async ()=>{
     setMovieList(result.data.content);
 }
 
+// const {state: movieList = []} = useAsync({
+//     dependencies: [],
+//     service: ()=> fetchMovieListAPI(),
+// });
+
 
 const renderMovieList = ()=>{
     return movieList.map((ele)=>{
@@ -26,7 +32,7 @@ const renderMovieList = ()=>{
                     <img className='card-img-top' src={ele.hinhAnh} alt='movie' style={{height: 350, objectFit:'cover'}} />
                     <div className='card-body'>
                         <h5 className='card-title'>{ele.tenPhim}</h5>
-                        <button className='btn btn-danger' onClick={()=> navigate(`/movie/${ele.maPhim}`)}>XEM CHI TIẾT</button>
+                        <button className='btn btn-danger' onClick={()=> navigate(`/movie/${ele.maPhim}`)}>DETAIL</button>
                     </div>
                 </div>
             </div>

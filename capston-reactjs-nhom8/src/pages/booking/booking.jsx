@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { fetchBookingTicketAPI, fetchRoomListAPI } from '../../service/booking';
-import Chair from '../../modules/chair/chair';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { fetchBookingTicketAPI, fetchRoomListAPI } from "../../service/booking";
+import Chair from "../../modules/chair/chair";
 
 export default function Booking() {
   const [danhSachGhe, setDanhSachGhe] = useState([]);
@@ -9,18 +9,18 @@ export default function Booking() {
   const params = useParams();
   const navigate = useNavigate();
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchRoomList();
   }, []);
 
-  const fetchRoomList = async ()=>{
+  const fetchRoomList = async () => {
     const result = await fetchRoomListAPI(params.maLichChieu);
     console.log(result);
     setRoomList(result.data.content);
-  }
+  };
 
-  const handleBookingTicket = async ()=>{
-    const danhSachVe = danhSachGhe.map((ele)=>{
+  const handleBookingTicket = async () => {
+    const danhSachVe = danhSachGhe.map((ele) => {
       return {
         maGhe: ele.maGhe,
         giaVe: ele.giaVe,
@@ -33,53 +33,62 @@ export default function Booking() {
     };
 
     await fetchBookingTicketAPI(submitData);
-    alert('TICKET SUCCESSFUL !!!');
-    navigate('/');
+    alert("TICKET SUCCESSFUL !!!");
+    navigate("/");
   };
-  
-  const handleSelect = (selectedChair)=>{
-    const data = [...danhSachGhe];
-    const idx = data.findIndex((ele)=> ele.tenGhe === selectedChair.tenGhe);
 
-    if(idx !== -1){
-      data.splice(idx,1);
-    } else{
-      data.push(selectedChair)
+  const handleSelect = (selectedChair) => {
+    const data = [...danhSachGhe];
+    const idx = data.findIndex((ele) => ele.tenGhe === selectedChair.tenGhe);
+
+    if (idx !== -1) {
+      data.splice(idx, 1);
+    } else {
+      data.push(selectedChair);
     }
-    setDanhSachGhe(data)
+    setDanhSachGhe(data);
   };
 
   return roomList ? (
-    <div className='row w-75 mx-auto my-5'>
-      <div className='col-8-xl'>
-      {roomList.danhSachGhe.map((ele,idx)=>{
-        return(
-          <React.Fragment key={ele.tenGhe}>
+    <div className="row w-75 mx-auto my-5">
+      <div className="col-xl-8">
+        {roomList.danhSachGhe.map((ele, idx) => {
+          return (
+            <React.Fragment key={ele.tenGhe}>
               <Chair handleSelect={handleSelect} item={ele} />
-              {(idx+1)%16 === 0 && <br />}
-          </React.Fragment>
-        );
-      })}
+              {(idx + 1) % 16 === 0 && <br />}
+            </React.Fragment>
+          );
+        })}
       </div>
-      <div className='col-4-xl'>
-        <img className='img-fluid'
-        src={roomList.thongTinPhim.hinhAnh}
-        alt='image'
+      <div className="col-xl-4">
+        <img
+          className="img-fluid"
+          src={roomList.thongTinPhim.hinhAnh}
+          alt="image"
         />
         <h4>Tên Phim: {roomList.thongTinPhim.tenPhim}</h4>
         <h5>Mô tả: {roomList.thongTinPhim.moTa}</h5>
         <p>
-          Ghê: {danhSachGhe.map((ele)=>(
-            <span key={ele.tenGhe} className='badge badge-success'>
+          Ghê:{" "}
+          {danhSachGhe.map((ele) => (
+            <span key={ele.tenGhe} className="badge badge-success">
               {ele.tenGhe}
             </span>
           ))}
         </p>
         <p>
-          Tổng tiền: {danhSachGhe.reduce((previousValue, currentValue)=>{
-            previousValue
-          })}
+          Tổng tiền:{" "}
+          {danhSachGhe
+            .reduce((previousValue, currentValue) => {
+              previousValue += currentValue.giaVe;
+              return previousValue;
+            }, 0)
+            .toLocaleString()}
         </p>
+        <button onClick={handleBookingTicket} className="btn btn-info">
+          BOOK TICKETS
+        </button>
       </div>
     </div>
   ) : (
