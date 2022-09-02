@@ -9,52 +9,84 @@ import {
   Select,
   Switch,
   TreeSelect,
-  Image
+  Image,
+  notification,
 } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { fetchMovieDetailAPI } from "../../service/movie";
+import { useNavigate, useParams } from "react-router-dom";
+import { GROUP_ID } from "../../constants/common";
+import { useAsync } from "../../hooks/useAsync";
+import { addMovieUploadImgAPI,updateMovieUploadAPI } 
+from "../../service/movie";
+import {fetchMovieDetailAPI } from '../../service/movie'
+
 
 export default function MovieForm() {
   const [componentSize, setComponentSize] = useState("default");
+  // const [movieDetail, setMovieDetail] = useState();
   const [image, setImage] = useState();
   const [file, setFile] = useState();
   const params = useParams();
   const [form] = Form.useForm();
-  const [movieDetail, setMovieDetail] = useState();
+  const navigate = useNavigate();
+ 
+  const { state: movieDetail } = useAsync({
+    service: () => fetchMovieDetailAPI(params.movieId),
+    dependencies: [params.movieId],
+    condition: !!params.movieId,
+  });
 
-  useEffect(()=>{
-    if(!!params.movieId){
-      fetchMovieDetail()
-    }
-  },[params.movieId])
-
-  const fetchMovieDetail = async()=>{
-    const result = await fetchMovieDetailAPI(params.movieId)
-    setMovieDetail(result.data.content)
-  }
-
-  useEffect(()=>{
-    if(movieDetail){
+  useEffect(() => {
+    if (movieDetail) {
       form.setFieldsValue({
         ...movieDetail,
-        ngayKhoichieu: moment(movieDetail.ngayKhoichieu),
+        ngayKhoiChieu: moment(movieDetail.ngayKhoiChieu),
       });
-      setImage(movieDetail.hinhAnh)
-    }
-  },[movieDetail])
 
-  
-  
-  
-  
-  
-  
-  
-  
+      setImage(movieDetail.hinhAnh);
+    }
+  }, [movieDetail]);
+
   const onFormLayoutChange = (event) => {
     setComponentSize(event.target.value);
+  };
+
+  const handleSave = async (values) => {
+    values.ngayKhoiChieu = values.ngayKhoiChieu.format('DD/MM/YYYY');
+    values.maNhom = GROUP_ID;
+
+    const formData = new FormData();
+
+    for (const key in values) {
+      formData.append(key, values[key]);
+    }
+
+    file && formData.append('File', file, file.name);
+    params.movieId && formData.append('maPhim', params.movieId);
+
+    if (params.movieId) {
+      await updateMovieUploadAPI(formData);
+    } else {
+      await addMovieUploadImgAPI(formData);
+    }
+
+    notification.success({
+      description: 'Successfully!',
+    });
+    navigate('/admin/movie-management');
+  };
+
+  const handleChangeImage = (event) => {
+    const file = event.target.files[0];
+
+    const reader = new FileReader();
+
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      setImage(e.target.result);
+      setFile(file);
+    };
   };
 
   return (
@@ -67,15 +99,16 @@ export default function MovieForm() {
       }}
       layout="vertical"
       initialValues={{
-        tenPhim: '',
-        moTa: '',
-        ngayKhoichieu: '',
+        tenPhim: "",
+        moTa: "",
+        ngayKhoichieu: "",
         sapChieu: true,
-        danhChieu: true,
+        dangChieu: true,
         hot: true,
-        trailer: '',
-        danhGia: '',
+        trailer: "",
+        danhGia: "",
       }}
+      onFinish={handleSave}
       size={componentSize}
     >
       <Form.Item label="Form Size">
@@ -85,33 +118,36 @@ export default function MovieForm() {
           <Radio.Button value="large">Large</Radio.Button>
         </Radio.Group>
       </Form.Item>
-      <Form.Item label="Movie" name='tenPhim'>
+      <Form.Item label="Movie" name="tenPhim">
         <Input />
       </Form.Item>
-      <Form.Item label="Trailer" name='trailer'>
+      <Form.Item label="Trailer" name="trailer">
         <Input />
       </Form.Item>
-      <Form.Item label="Describe" name='moTa'>
+      <Form.Item label="Describe" name="moTa">
         <Input />
       </Form.Item>
-      <Form.Item label="Premiere Date" name='ngayKhoiChieu'>
+      <Form.Item label="Premiere Date" name="ngayKhoiChieu">
         <DatePicker />
       </Form.Item>
-      <Form.Item label="Now Showing" valuePropName="checked" name='dangChieu'>
+      <Form.Item label="Now Showing" valuePropName="checked" name="dangChieu">
         <Switch />
       </Form.Item>
-      <Form.Item label="Coming soon" valuePropName="checked" name='sapChieu'>
+      <Form.Item label="Coming soon" valuePropName="checked" name="sapChieu">
         <Switch />
       </Form.Item>
-      <Form.Item label='Star' name='danhGia'>
+      <Form.Item label="Hot" valuePropName="checked" name="hot">
+        <Switch />
+      </Form.Item>
+      <Form.Item label="Star" name="danhGia">
         <InputNumber />
       </Form.Item>
-      <Form.Item label='Hình ảnh'>
-        <Input type='file'/>
+      <Form.Item label="Hình ảnh">
+        <Input type="file" onChange={handleChangeImage} />
       </Form.Item>
-      <Image />
-      <Form.Item >
-        <Button type='primary' htmlType='submit'>
+      <Image src={image} />
+      <Form.Item>
+        <Button type="primary" htmlType="submit">
           SAVE
         </Button>
       </Form.Item>

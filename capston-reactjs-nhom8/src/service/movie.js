@@ -23,7 +23,7 @@ const addMovieUploadImgAPI = (data) =>{
     })
 }
 
-const updateMovieUploadImageAPI = (data) =>{
+const updateMovieUploadAPI = (data) =>{
     return request({
         url: '/QuanLyPhim/CapNhatPhimUpload',
         method: 'POST',
@@ -31,4 +31,11 @@ const updateMovieUploadImageAPI = (data) =>{
     })
 }
 
-export {fetchMovieListAPI, fetchMovieDetailAPI, addMovieUploadImgAPI, updateMovieUploadImageAPI};
+const deleteMovieAPI = (movieId)=>{
+    return request({
+        url: `/QuanLyPhim/XoaPhim?MaPhim=${movieId}`,
+        method: 'DELETE',
+    })
+  }
+
+export {fetchMovieListAPI, fetchMovieDetailAPI, addMovieUploadImgAPI, updateMovieUploadAPI, deleteMovieAPI};

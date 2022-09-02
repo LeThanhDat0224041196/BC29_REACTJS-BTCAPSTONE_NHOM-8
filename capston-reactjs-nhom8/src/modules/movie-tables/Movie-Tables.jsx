@@ -1,24 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { Button, Space, Table, Tag, Input, Typography } from "antd";
-import { fetchMovieListAPI } from "../../service/movie";
+import { Button, Space, Table, Tag, Input, Typography, notification } from "antd";
+import { deleteMovieAPI, fetchMovieDetailAPI, fetchMovieListAPI } from "../../service/movie";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/common";
+import { useAsync } from "../../hooks/useAsync";
 
 const { Title } = Typography;
 
 export default function MovieTables() {
-  const [data, setData] = useState([]);
+  // const [movieDetail, setMovieDetail] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   fetchMovieDetail();
+  // }, []);
 
-  const fetchData = async () => {
-    const result = await fetchMovieListAPI();
-    console.log(result);
-    setData(result.data.content);
-  };
+  // const fetchMovieDetail = async () => {
+  //   const result = await fetchMovieListAPI();
+  //   console.log(result);
+  //   setMovieDetail(result.data.content);
+  // };
+  const {state: data = []} = useAsync({
+    service: () => fetchMovieListAPI(),
+  })
+
+  const handleDelete = async (movieId)=>{
+    await deleteMovieAPI(movieId);
+    notification.success({
+      description: 'Delete Successfully !!!'
+    });
+    navigate('/admin/movie-managmet')
+    console.log(data);
+  }
 
   const columns = [
     {
@@ -65,7 +78,7 @@ export default function MovieTables() {
           >
             Edit
           </Button>
-          <Button type="primary" danger>
+          <Button onClick={handleDelete} type="primary" danger>
             Delete
           </Button>
         </Space>
@@ -81,9 +94,9 @@ export default function MovieTables() {
           <Input placeholder="Search" />
         </div>
         <div className="text-left mb-3">
-          <Button onClick={()=>navigate('/admin/movie-management/create')} type="primary">CREATE</Button>
+          <Button onClick={()=>navigate('/admin/movie-management/create')} type="primary">ADD FILM</Button>
         </div>
-        <Table columns={columns} dataSource={data} />
+        <Table rowKey='maPhim' columns={columns} dataSource={data} />
       </div>
     </>
   );

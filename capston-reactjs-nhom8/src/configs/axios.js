@@ -1,3 +1,4 @@
+import { notification } from "antd";
 import axios from "axios";
 import { TOKEN_CYBERSOFT, BASE_URL, USER_INFO_KEY } from "../constants/common";
 
@@ -5,7 +6,7 @@ export const request = axios.create({
     baseURL: BASE_URL,
     headers: {
         TokenCybersoft: TOKEN_CYBERSOFT
-    }
+    },
 });
 
 request.interceptors.request.use((config)=>{
@@ -21,4 +22,11 @@ request.interceptors.request.use((config)=>{
 
 request.interceptors.response.use((response)=>{
     return response
-})
+},
+// (error) => {
+//     notification.error({
+//         message:error.response.data.content,
+//     });
+//     throw new Error(error)
+// }
+);
