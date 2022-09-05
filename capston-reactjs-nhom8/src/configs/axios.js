@@ -23,10 +23,4 @@ request.interceptors.request.use((config)=>{
 request.interceptors.response.use((response)=>{
     return response
 },
-// (error) => {
-//     notification.error({
-//         message:error.response.data.content,
-//     });
-//     throw new Error(error)
-// }
 );
